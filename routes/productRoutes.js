@@ -8,6 +8,7 @@ productRouter.get('/', async (req, res) => {
   res.send(products);
 });
 productRouter.get('/slug/:slug', async (req, res) => {
+  const { slug } = req.params.slug;
   const product = await Product.findOne({ slug: { $eq: req.params.slug } });
   if (product) {
     res.send(product);
@@ -16,8 +17,8 @@ productRouter.get('/slug/:slug', async (req, res) => {
   }
 });
 productRouter.get('/:id', async (req, res) => {
-  console.log(req.params.id);
-  const product = await Product.findById(req.params.id);
+  const { id } = req.params;
+  const product = await Product.findById(id);
   if (product) {
     res.send(product);
   } else {
