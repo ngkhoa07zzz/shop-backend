@@ -9,7 +9,7 @@ export const generateToken = (user) => {
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: '5m',
+      expiresIn: '30d',
     }
   );
 };

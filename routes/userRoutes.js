@@ -29,5 +29,30 @@ userRouter.post(
     }
   })
 );
-
+userRouter.post(
+  '/signup',
+  Async(async (req, res) => {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      throw new ApiError(400, 'All field are mandatory');
+    }
+    const userAvailable = await User.findOne({ email });
+    if (userAvailable) {
+      throw new ApiError(400, 'User has already registered');
+    }
+    const hashPassword = await bcript.hash(password, 10);
+    const user = await User.create({
+      name,
+      email,
+      password: hashPassword,
+    });
+    res.send({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      token: generateToken(user),
+    });
+  })
+);
 export default userRouter;
