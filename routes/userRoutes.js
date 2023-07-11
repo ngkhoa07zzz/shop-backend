@@ -3,7 +3,7 @@ import bcript from 'bcrypt';
 import Async from '../middleware/Async.js';
 import User from '../models/userModel.js';
 import ApiError from '../utils/ApiError.js';
-import { generateToken } from '../utils/Jwt.js';
+import { generateToken } from '../utils/auth.js';
 
 const userRouter = express.Router();
 
