@@ -38,7 +38,6 @@ orderRouter.get(
   Async(async (req, res) => {
     const orders = await Order.find({ user: req.user._id });
     res.send(orders);
-    console.log(orders);
   })
 );
 orderRouter.get(
