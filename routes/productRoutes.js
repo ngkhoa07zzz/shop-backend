@@ -1,6 +1,7 @@
 import express from 'express';
 import Product from '../models/productModel.js';
 import Async from '../middleware/Async.js';
+import { isAdmin, isAuth } from '../utils/auth.js';
 
 const productRouter = express.Router();
 
@@ -12,10 +13,55 @@ productRouter.get(
   })
 );
 
-const PAGE_SIZE = 3;
+productRouter.post(
+  '/',
+  isAuth,
+  isAdmin,
+  Async(async (req, res) => {
+    const newProduct = await Product.create({
+      name: 'sample name ' + Date.now(),
+      slug: 'sample-name-' + Date.now(),
+      image: 'images/asus-dual-rtx4060.jpg',
+      price: 0,
+      category: 'sample category',
+      brand: 'sample brand',
+      countInStock: 0,
+      rating: 0,
+      numReviews: 0,
+      description: 'sample description',
+    });
+
+    res.send({ message: 'Product Created', newProduct });
+  })
+);
+
+productRouter.get(
+  '/admin',
+  isAuth,
+  isAdmin,
+  Async(async (req, res) => {
+    const PAGE_SIZE = 10;
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+
+    const products = await Product.find()
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countProducts = await Product.countDocuments();
+    res.send({
+      products,
+      countProducts,
+      page,
+      pages: Math.ceil(countProducts / pageSize),
+    });
+  })
+);
+
 productRouter.get(
   '/search',
   Async(async (req, res) => {
+    const PAGE_SIZE = 3;
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
@@ -110,6 +156,39 @@ productRouter.get(
   })
 );
 
+productRouter.patch(
+  '/:id',
+  isAuth,
+  isAdmin,
+  Async(async (req, res) => {
+    const {
+      name,
+      slug,
+      price,
+      image,
+      category,
+      brand,
+      countInStock,
+      description,
+    } = req.body;
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) {
+      throw new ApiError(404, 'Product not found');
+    }
+    await Product.findByIdAndUpdate(id, {
+      name,
+      slug,
+      price,
+      image,
+      category,
+      brand,
+      countInStock,
+      description,
+    });
+    res.send({ message: 'Product Updated' });
+  })
+);
 productRouter.get(
   '/:id',
   Async(async (req, res) => {
