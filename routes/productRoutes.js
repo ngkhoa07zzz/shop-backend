@@ -2,6 +2,7 @@ import express from 'express';
 import Product from '../models/productModel.js';
 import Async from '../middleware/Async.js';
 import { isAdmin, isAuth } from '../utils/auth.js';
+import ApiError from '../utils/ApiError.js';
 
 const productRouter = express.Router();
 
@@ -199,6 +200,21 @@ productRouter.get(
     } else {
       throw new ApiError(404, 'Product not found');
     }
+  })
+);
+
+productRouter.delete(
+  '/:id',
+  isAuth,
+  isAdmin,
+  Async(async (req, res) => {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) {
+      throw new ApiError(404, 'Product not found');
+    }
+    await Product.findByIdAndDelete(id);
+    res.status(200).send({ message: 'Product deleted' });
   })
 );
 
