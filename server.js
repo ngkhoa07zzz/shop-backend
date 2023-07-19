@@ -7,7 +7,7 @@ import Async from './middleware/Async.js';
 import errorHandler from './middleware/errorHandler.js';
 import userRouter from './routes/userRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
-import uploadRouter from './routes/uploadRotes.js';
+import uploadRouter from './routes/uploadRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
