@@ -4,6 +4,14 @@ import ApiError from '../utils/ApiError.js';
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
 
+// @desc List order
+// @route GET /api/orders/
+// @access private
+const listOrder = Async(async (req, res) => {
+  const orders = await Order.find().populate('user', 'name');
+  res.json(orders);
+});
+
 // @desc Create order
 // @route POST /api/orders/
 // @access private
@@ -92,7 +100,13 @@ const getOrder = Async(async (req, res) => {
     throw new ApiError(400, 'Order not found');
   }
 });
-
+const DeliverOrder = Async(async (req, res) => {
+  const { id } = req.params;
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new ApiError(404, 'Order not found');
+  }
+});
 // @desc Pay order
 // @route PUT /api/orders/:id/pay
 // @access private
@@ -114,4 +128,4 @@ const payOrder = Async(async (req, res) => {
     throw new ApiError(404, 'Order not found!');
   }
 });
-export { createOrder, summaryData, getMyOrders, getOrder, payOrder };
+export { listOrder, createOrder, summaryData, getMyOrders, getOrder, payOrder };

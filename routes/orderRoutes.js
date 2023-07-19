@@ -6,6 +6,7 @@ import {
   createOrder,
   getMyOrders,
   getOrder,
+  listOrder,
   payOrder,
   summaryData,
 } from '../controllers/orderControllers.js';
@@ -13,6 +14,7 @@ import {
 const orderRouter = express.Router();
 
 orderRouter.post('/', isAuth, createOrder);
+orderRouter.get('/', isAuth, isAdmin, listOrder);
 
 orderRouter.get('/summary', isAuth, isAdmin, summaryData);
 

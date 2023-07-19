@@ -30,8 +30,8 @@ app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 
 // use middleware
-app.use(Async);
 app.use(errorHandler);
+app.use(Async);
 
 app.listen(PORT, () => {
   console.log(`Server is running on  http://localhost:${PORT}`);
