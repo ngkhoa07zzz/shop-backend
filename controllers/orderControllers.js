@@ -100,13 +100,36 @@ const getOrder = Async(async (req, res) => {
     throw new ApiError(400, 'Order not found');
   }
 });
-const DeliverOrder = Async(async (req, res) => {
+
+// @desc Delete Order
+// @route DELETE /api/orders/:id
+// @access private
+const deleteOrder = Async(async (req, res) => {
   const { id } = req.params;
   const order = await Order.findById(id);
   if (!order) {
     throw new ApiError(404, 'Order not found');
   }
+  await Order.findByIdAndDelete(id);
+  res.json({ message: `Order ${id} deleted` });
 });
+
+// @desc Deliver Order
+// @route PUT /api/orders/:id/deliver
+// @access private
+const deliverOrder = Async(async (req, res) => {
+  const { id } = req.params;
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new ApiError(404, 'Order not found');
+  }
+  await Order.findByIdAndUpdate(id, {
+    isDelivered: true,
+    deliveredAt: Date.now(),
+  });
+  res.json({ message: 'Order delivered' });
+});
+
 // @desc Pay order
 // @route PUT /api/orders/:id/pay
 // @access private
@@ -128,4 +151,13 @@ const payOrder = Async(async (req, res) => {
     throw new ApiError(404, 'Order not found!');
   }
 });
-export { listOrder, createOrder, summaryData, getMyOrders, getOrder, payOrder };
+export {
+  listOrder,
+  createOrder,
+  summaryData,
+  getMyOrders,
+  getOrder,
+  deleteOrder,
+  deliverOrder,
+  payOrder,
+};
