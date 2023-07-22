@@ -4,6 +4,14 @@ import User from '../models/userModel.js';
 import ApiError from '../utils/ApiError.js';
 import { generateToken } from '../utils/auth.js';
 
+// @desc Get list User
+// @route GET /api/users/
+// @access private
+const listUser = Async(async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
+
 // @desc User Signin
 // @route POST /api/users/signin
 // @access public
@@ -79,4 +87,41 @@ const userProfile = Async(async (req, res) => {
     });
   }
 });
-export { userSignin, userSignup, userProfile };
+
+// @desc Get user by id
+// @route GET /api/users/:id
+// @access private
+const getUserById = Async(async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+  res.json(user);
+});
+
+// @desc Delete user
+// @route DELETE /api/users/:id
+// @access private
+const deleteUser = Async(async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  } else {
+    if (user.email === 'adminroot@gmail.com') {
+      throw new ApiError(400, "Can't delete root Admin");
+    }
+    await User.findByIdAndDelete(id);
+    res.json({ message: 'User deleted' });
+  }
+});
+
+export {
+  listUser,
+  userSignin,
+  userSignup,
+  userProfile,
+  getUserById,
+  deleteUser,
+};

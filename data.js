@@ -9,6 +9,12 @@ const data = {
       isAdmin: true,
     },
     {
+      name: 'Admin',
+      email: 'adminroot@gmail.com',
+      password: bcript.hashSync('root123456', 10),
+      isAdmin: true,
+    },
+    {
       name: 'User',
       email: 'user01@gmail.com',
       password: bcript.hashSync('12345633333', 10),
