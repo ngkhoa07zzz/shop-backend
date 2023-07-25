@@ -63,7 +63,7 @@ const userSignup = Async(async (req, res) => {
 });
 
 // @desc Profile user
-// @route POST /api/users/profile
+// @route PATCH /api/users/profile
 // @access private
 const userProfile = Async(async (req, res) => {
   const { name, email, password } = req.body;
